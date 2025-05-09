@@ -22,6 +22,10 @@ const doctorSchema = new mongoose.Schema({
         type: String,
         required: true 
     },
+    qualification:{
+        type: String,
+        required: true 
+    },
     contact: {
         type: Number,
         required: true

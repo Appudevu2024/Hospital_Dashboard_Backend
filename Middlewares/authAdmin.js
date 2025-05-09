@@ -8,7 +8,7 @@ try {
     //const {token}=req.cookies;
     //console.log(req.cookies);
     const {Admin_token} = req.cookies ;
-   
+   console.log(Admin_token);
     if(!Admin_token){
         return res.status(401).json({error:'Jwt not found'});
     }

@@ -27,7 +27,7 @@ const addNewBloodGroup = async (req, res) => {
         const savedBloodGroup = await newBloodGroup.save();
         if (savedBloodGroup) {
 
-         return res.status(200).json({ message: 'Bloodgroup added' })
+         return res.status(200).json({ message: 'Bloodgroup added', savedBloodGroup})
         }
 
 
@@ -38,7 +38,7 @@ const addNewBloodGroup = async (req, res) => {
 
 }
 
- const listAllBloodgroups = async (req, res) => {
+ const listBloodBankData = async (req, res) => {
    try {
      const bloodgroups = await bloodbankDb.find().sort({ createdAt: -1 }); 
  
@@ -53,11 +53,15 @@ const addNewBloodGroup = async (req, res) => {
    }
  }
  
- const updateBloodgroups = async (req, res) => {
-     const { bloodgroup } = req.body;
-     const { noofbagsavailable } = req.body;
+ const updateBloodgroup = async (req, res) => {
+     const { _id, bloodgroup,noofbagsavailable } = req.body;
+     if (!_id) {
+      return res.status(400).json({ error: 'Id is required' });
+  }
+
+    
      try {
-            const newBloodGroup = await bloodbankDb.findOneAndUpdate({bloodgroup}, {noofbagsavailable},{ new: true, runValidators: true });
+            const newBloodGroup = await bloodbankDb.findOneAndUpdate({_id},{bloodgroup ,noofbagsavailable},{ new: true, runValidators: true });
          if (!newBloodGroup) return res.status(404).json({ message: 'Bloodgroup not found' });
          const savedBloodgroup = await newBloodGroup.save();
          
@@ -68,10 +72,14 @@ const addNewBloodGroup = async (req, res) => {
  }
  
  const deleteBloodGroup = async (req, res) => {
-     const { bloodgroup } = req.params;
+     const { _id } = req.body;
    
+     if (!_id) {
+      return res.status(400).json({ error: 'Id is required' });
+  }
+
      try {
-       const deletetedBloodGp = await bloodbankDb.findOneAndDelete({ bloodgroup });
+       const deletetedBloodGp = await bloodbankDb.findOneAndDelete({ _id });
    
        if (!deletetedBloodGp) {
          return res.status(404).json({ message: "Bloodgroup not found" });
@@ -84,4 +92,4 @@ const addNewBloodGroup = async (req, res) => {
    }
    
  
-   module.exports={addNewBloodGroup,listAllBloodgroups,updateBloodgroups,deleteBloodGroup}
+   module.exports={addNewBloodGroup,listBloodBankData,updateBloodgroup,deleteBloodGroup}

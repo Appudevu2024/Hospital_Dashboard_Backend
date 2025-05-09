@@ -10,10 +10,12 @@ const adminSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    role: { type: String, enum: ['admin', 'doctor', 'staff'], default: 'admin' }, 
     image: {
         type: String,
         required: true
-    }
+      }
+    
 }, { timestamps: true })
 
 

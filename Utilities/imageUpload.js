@@ -12,4 +12,4 @@ const uploadToCloudinary = (filePath) => {
         )
     })
 }
-module.exports = {uploadToCloudinary}
+module.exports = uploadToCloudinary

@@ -60,10 +60,9 @@ const listAllDepartments = async (req, res) => {
 
 
 const updateDepartment = async (req, res) => {
-    const { name } = req.body;
-    const { description } = req.body;
+  const { _id, name,description } = req.body;
     try {
-           const updatedDepartment = await departmentDB.findOneAndUpdate({name}, {description},{ new: true, runValidators: true });
+           const updatedDepartment = await departmentDB.findOneAndUpdate({_id},{name, description},{ new: true, runValidators: true });
         if (!updatedDepartment) return res.status(404).json({ message: 'Department not found' });
         const savedDept = await updatedDepartment.save();
         
@@ -75,10 +74,10 @@ const updateDepartment = async (req, res) => {
 
 
 const deleteDepartment = async (req, res) => {
-    const { name } = req.params;
+  const { _id } = req.body;
   
     try {
-      const deletedDept = await departmentDB.findOneAndDelete({ name });
+      const deletedDept = await departmentDB.findOneAndDelete({ _id });
   
       if (!deletedDept) {
         return res.status(404).json({ message: "Department not found" });

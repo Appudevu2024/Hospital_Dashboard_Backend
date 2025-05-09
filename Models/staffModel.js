@@ -36,7 +36,7 @@ const staffSchema = new mongoose.Schema({
         required: true
 
     },
-    role: {
+    staffrole: {
         type: String,
         required: true
     },
@@ -46,4 +46,4 @@ const staffSchema = new mongoose.Schema({
       }
 }, { timestamps: true });
 
-module.exports = new mongoose.model('servicestaffs', staffSchema);
+module.exports = new mongoose.model('staffs', staffSchema);

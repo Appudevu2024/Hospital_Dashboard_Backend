@@ -3,23 +3,24 @@
  const cookieParser = require('cookie-parser');
  require('dotenv').config();
  
- const authUser= (req,res,next)=>{
+ const authStaff= (req,res,next)=>{
  try {
      //const {token}=req.cookies;
      //console.log(req.cookies);
-     const {token} = req.cookies ;
+     const {staff_token} = req.cookies ;
+    console.log(staff_token);
     
-     if(!token){
+     if(!staff_token){
          return res.status(401).json({error:'Jwt not found'});
      }
      
-     const verifiedToken=jwt.verify(token, process.env.JWT_SECRET)
+     const verifiedToken=jwt.verify(staff_token, process.env.JWT_SECRET)
      if(!verifiedToken){
          return res.status(401).json({error:'User not authorized'});
      }
     
  
-     if(verifiedToken.role!=='user'){
+     if(verifiedToken.role!=='staff'){
          return res.status(401).json({error:'Access denied'});
      }
  
@@ -31,4 +32,4 @@
  }
  }
  
- module.exports=authUser;
+ module.exports=authStaff;

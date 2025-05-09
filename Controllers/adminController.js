@@ -2,7 +2,9 @@ const { image } = require("../Config/cloudinaryConfig");
 const adminDb = require("../Models/adminModel");
 const createToken = require("../Utilities/generateToken");
 const { hashPassword,comparePassword} = require("../Utilities/passwordUtilities");
-const {uploadToCloudinary}=require('../Utilities/imageUpload')
+const uploadToCloudinary=require('../Utilities/imageUpload')
+
+
 
 const register=async (req,res)=>{
     try {
@@ -46,9 +48,20 @@ const register=async (req,res)=>{
 }
 
 
-const login = async (req, res) => {
+const loggedin= async (req, res) => {
     try {
 
+    // Only accessible by verified admin
+    res.json({ message: 'Welcome Admin' });
+  }catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ error: error.message || 'Internal server error' })
+}
+}
+
+const login = async (req, res) => {
+    try {
+        console.log(' req.body =', req.body);
         const { email, password } = req.body;
 
         if (!email || !password) {
@@ -56,7 +69,7 @@ const login = async (req, res) => {
         }
 
         const adminExist = await adminDb.findOne({ email })
-
+        console.log(adminExist)
         if (!adminExist) {
             return res.status(400).json({ error: 'Admin not found' })
         }
@@ -65,11 +78,18 @@ const login = async (req, res) => {
         if (!passwordMatch) {
             return res.status(400).json({ error: 'Passwords does not  match' })
         }
-        const token = createToken(adminExist._id,"admin")
-        //console.log(token,"token");   
+        res.clearCookie('Admin_token');
+        res.clearCookie('Staff_token');  
+        const token = createToken(adminExist._id,adminExist.role)
+        //console.log(token,"token"); 
+        
         res.cookie("Admin_token", token);
         console.log(token)
-        return res.status(200).json({ message: 'Admin login successful', adminExist })
+        return res.status(200).json({ message: 'Admin login successful',  user: {
+            _id: adminExist._id,
+            email: adminExist.email,
+            role: adminExist.role, 
+          } })
 
     } catch (error) {
         console.log(error);
@@ -136,7 +156,7 @@ const updateAdmindata = async (req, res) => {
 
 const deleteAdmin= async (req, res) => {
     try {
-      const { email } = req.params;
+      const { email } = req.body;
   
       if (!email) {
         return res.status(400).json({ error: 'Email is required' });
@@ -162,6 +182,7 @@ module.exports={
     register,
      login,
      logout,
+     loggedin,
      adminDetails,
      updateAdmindata,
      deleteAdmin
